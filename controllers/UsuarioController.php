@@ -5,17 +5,18 @@
     class UsuarioController{
 
         public function ConsultaUsuarios(){
-            $Nombre = $_GET["nombre"] ?? null;
-            $ApellidoPaterno = $_GET["apellido_paterno"] ?? null;
-            $ApellidoMaterno = $_GET["apellido_materno"] ?? null;
-            $Celular = $_GET["celular"] ?? null;
-            $Correo = $_GET["correo"] ?? null;
+            $Nombre =           $_GET["nombre"] ?? null;
+            $ApellidoPaterno =  $_GET["apellido_paterno"] ?? null;
+            $ApellidoMaterno =  $_GET["apellido_materno"] ?? null;
+            $Celular =          $_GET["celular"] ?? null;
+            $Correo =           $_GET["correo"] ?? null;
+            $NombreEntidad =    $_GET["nombre_entidad"] ?? null;
+            $Habilitado =       $_GET["habilitado"] ?? null;
 
             $usuarioConsulta = new UsuarioRepository();
 
             try{
-
-                $consultaUsuario = $usuarioConsulta->consultaUsuarios($Nombre, $ApellidoPaterno, $ApellidoMaterno, $Celular, $Correo);
+                $consultaUsuario = $usuarioConsulta->consultaUsuarios($Nombre, $ApellidoPaterno, $ApellidoMaterno, $Celular, $Correo, $NombreEntidad, $Habilitado);
                 if($consultaUsuario && count($consultaUsuario) > 0){
                     header('Content-Type: application/json');
                     http_response_code(200);
@@ -35,19 +36,19 @@
             $usuarioInserta = new UsuarioRepository();
             $datos_inserta = json_decode(file_get_contents('php://input'), true);
             
-            if(!isset(
-                $datos_inserta['nombre'],
-                $datos_inserta['apellido_paterno'],
-                $datos_inserta['apellido_materno'],
-                $datos_inserta['celular'],
-                $datos_inserta['correo'],
-                $datos_inserta['id_tipo_usuario'],
-                $datos_inserta['contrasenia'],
-            )){
-                http_response_code(400);
-                echo json_encode(['status'=> false,'error'=> 'Campos Incompletos']);
-                return;
-            }
+                if(!isset(
+                    $datos_inserta['nombre'],
+                    $datos_inserta['apellido_paterno'],
+                    $datos_inserta['apellido_materno'],
+                    $datos_inserta['celular'],
+                    $datos_inserta['correo'],
+                    $datos_inserta['id_tipo_usuario'],
+                    $datos_inserta['contrasenia'],
+                )){
+                    http_response_code(400);
+                    echo json_encode(['status'=> false,'error'=> 'Campos Incompletos']);
+                    return;
+                }
             try{
                 $respuesta = $usuarioInserta->insertaUsuario(
                         $datos_inserta['nombre'],
@@ -55,6 +56,7 @@
                         $datos_inserta['apellido_materno'],
                         $datos_inserta['celular'],
                         $datos_inserta['correo'],
+                        $datos_inserta['id_entidad'],
                         $datos_inserta['id_tipo_usuario'],
                         $datos_inserta['contrasenia']);
                 if($respuesta){

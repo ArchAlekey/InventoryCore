@@ -10,8 +10,8 @@
             $this->conn = $db->conectar();
         }
         /* Métodos GET - Consulta una lista de usuarios activos*/
-        public function consultaUsuarios($nombre, $apellido_paterno, $apellido_materno, $celular, $correo){
-            $spd = "CALL PD_CONSULTA_USUARIOS(:nombre, :apellido_paterno, :apellido_materno, :celular, :correo)";
+        public function consultaUsuarios($nombre, $apellido_paterno, $apellido_materno, $celular, $correo, $nombre_entidad, $habilitado){
+            $spd = "CALL PD_CONSULTA_USUARIOS(:nombre, :apellido_paterno, :apellido_materno, :celular, :correo, :nombre_entidad, :habilitado)";
             $stmt = $this->conn->prepare($spd);
 
             $stmt->bindValue(":nombre",$nombre);
@@ -19,6 +19,8 @@
             $stmt->bindValue(":apellido_materno",$apellido_materno);
             $stmt->bindValue(":celular",$celular);
             $stmt->bindValue(":correo",$correo);
+            $stmt->bindValue(":nombre_entidad",$nombre_entidad);
+            $stmt->bindValue(":habilitado",$habilitado);
             $stmt->execute();
 
             $resultadoConsultaUsuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -27,8 +29,8 @@
         }
         
         /* Método POST - Inserta un nuevo usuario */
-        public function insertaUsuario($nombre, $apellido_paterno, $apellido_materno, $celular, $correo, $id_tipo_usuario, $contrasenia){
-                $spd = "CALL PD_INSERTA_USUARIO(:nombre, :apellido_paterno, :apellido_materno, :celular, :correo, :id_tipo_usuario, :contrasenia)";
+        public function insertaUsuario($nombre, $apellido_paterno, $apellido_materno, $celular, $correo, $id_entidad, $id_tipo_usuario, $contrasenia){
+                $spd = "CALL PD_INSERTA_USUARIO(:nombre, :apellido_paterno, :apellido_materno, :celular, :correo, :id_entidad, :id_tipo_usuario, :contrasenia)";
                 $stmt = $this->conn->prepare($spd);
 
                 $stmt->bindValue(":nombre",$nombre);
@@ -36,6 +38,7 @@
                 $stmt->bindValue(":apellido_materno",$apellido_materno);
                 $stmt->bindValue(":celular",$celular);
                 $stmt->bindValue(":correo",$correo);
+                $stmt->bindValue(":id_entidad",$id_entidad);
                 $stmt->bindValue(":id_tipo_usuario",$id_tipo_usuario);
                 $stmt->bindValue(":contrasenia",$contrasenia);
                 
