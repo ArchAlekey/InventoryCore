@@ -7,6 +7,11 @@
 
     $URI = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
+    /* RUTA POR DEFECTO */
+    if ($URI === '/' || $URI === '') {
+        echo json_encode(['mensaje' => 'API Inventario corriendo correctamente']);
+        exit;
+    }
     /* RUTAS DE INVENTARIO */
     /* Consulta una lista donde están todos los inventarios */
     if($URI === '/inventario/general' && $_SERVER['REQUEST_METHOD'] === 'GET'){
@@ -15,7 +20,7 @@
         exit;
     }
     /* Inserta un nuevo item en el inventario */
-    if($URI === '/inventario/inserta'&& $_SERVER['REQUEST_METHOD'] === 'POST'){
+    if($URI === '/inventario/inserta' && $_SERVER['REQUEST_METHOD'] === 'POST'){
         $controllerProducto = new ConsultaGeneralController();
         $controllerProducto->InsertaItemInventario();
         exit;
