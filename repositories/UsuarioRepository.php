@@ -80,4 +80,27 @@
 
             return $stmt->execute();
         }
+
+        public function eliminaUsuarios($id_persona){
+            $spd =  "CALL SPD_ELIMINA_USUARIO(:id_persona)";        
+            $stmt = $this->conn->prepare($spd);
+
+            $stmt->bindValue(":id_persona",$id_persona);
+            return $stmt->execute();
+        }
+
+        public function validaUsuario($usuario, $contrasenia){
+            $spd = "CALL PD_VALIDA_USUARIO(:usuario, :contrasenia)";
+            $stmt = $this->conn->prepare($spd);
+
+            $stmt->bindValue(":usuario",$usuario);
+            $stmt->bindValue(":contrasenia",$contrasenia);
+            $stmt->execute();
+
+            $resultadoValidaUsuario = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            return $resultadoValidaUsuario;
+        }
+
+
     }

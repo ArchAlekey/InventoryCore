@@ -1,17 +1,17 @@
 <?php 
 
 class Database{
-    private $host = "b42to9ycjk414xsspecx-mysql.services.clever-cloud.com";
+/*     private $host = "b42to9ycjk414xsspecx-mysql.services.clever-cloud.com";
     private $db_name = "b42to9ycjk414xsspecx";
     private $username = "uop92phqajvwggj3";
     private $password = "ZWUeygqtL0DOpJtpOlET";
-    public $conn;
+    public $conn; */
 
-/*     private $host = "localhost";
+    private $host = "localhost";
     private $db_name = "SistemaEVA";
     private $username = "root";
     private $password = "Hera010219";
-    public $conn; */
+    public $conn;
 
 public function conectar() {
         $this->conn = null;

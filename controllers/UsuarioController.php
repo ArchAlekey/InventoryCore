@@ -139,4 +139,42 @@
                 echo json_encode(['status'=> false,'message'=> $e->getMessage()]);
             }
         }
+
+        public function EliminaUsuario(){
+            $usuarioElimina = new UsuarioRepository();
+            $data_elimina = json_decode(file_get_contents('php://input'), true);
+
+            try{
+                $respuesta = $usuarioElimina->eliminaUsuarios($data_elimina['id_persona']);
+                if($respuesta){
+                    http_response_code(200);
+                    echo json_encode(['status'=> true,'message'=> 'Se ha eliminado al usuario.']);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(['status'=> false,'message'=> 'No se pudo elimiar al usuario']);
+                }
+            } catch(Exception $e) {
+                http_response_code(500);
+                echo json_encode(['status'=> false,'message'=> $e->getMessage()]);
+            }
+        }
+
+        public function ValidaUsuario(){
+            $usuarioValida = new UsuarioRepository();
+            $data_valida = json_decode(file_get_contents('php://input'), true);
+
+            try{
+                $respuesta = $usuarioValida->validaUsuario($data_valida['usuario'], $data_valida['contrasenia']);
+                if($respuesta && count($respuesta) > 0){
+                    http_response_code(200);
+                    echo json_encode(['status'=> true,'message'=> 'Consulta exitosa', 'data' => $respuesta]);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(['status'=> false,'message'=> 'Usurio o contraseña invalidos, por favor ingresa credenciales validas.']);
+                }
+            } catch(Exception $e) {
+                http_response_code(500);
+                echo json_encode(['status'=> false,'message'=> $e->getMessage()]);
+            }
+        }
     }

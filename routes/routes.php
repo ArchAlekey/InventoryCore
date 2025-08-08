@@ -74,6 +74,20 @@
         exit;
     }
 
+    /* Elimina al usuario */
+    if($URI === '/usuarios/elimina' && $_SERVER['REQUEST_METHOD'] === 'DELETE'){
+        $controllerUsuario = new UsuarioController();
+        $controllerUsuario->EliminaUsuario();
+        exit;
+    }
+
+    /* Valida usuario */
+    if($URI === '/usuarios/valida' && $_SERVER['REQUEST_METHOD'] === 'POST'){
+        $controllerUsuario = new UsuarioController();
+        $controllerUsuario->ValidaUsuario();
+        exit;
+    }
+
     /* RUTAS PRODUCTO */
     /* Inserta producto */
     if($URI === '/producto/inserta'&& $_SERVER['REQUEST_METHOD'] === 'POST'){
