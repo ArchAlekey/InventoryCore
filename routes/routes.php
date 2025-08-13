@@ -4,6 +4,7 @@
     require_once __DIR__ ."/../controllers/BitacoraController.php";
     require_once __DIR__ ."/../controllers/UsuarioController.php";
     require_once __DIR__ ."/../controllers/ProductoController.php";
+    require_once __DIR__ ."/../controllers/ContactoController.php";
 
     $URI = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -110,6 +111,13 @@
         exit;
     }
 
+    /* RUTAS CONTACTO */
+    /* Envía formulario de contacto */
+    if($URI === '/contacto/envia' && $_SERVER['REQUEST_METHOD'] === 'POST'){
+        $controllerContacto = new ContactoController();
+        $controllerContacto->InsertaContacto();
+        exit;
+    }
     // Puedes agregar más rutas abajo
     http_response_code(404);
     echo json_encode(['error' => 'Ruta no encontrada']);

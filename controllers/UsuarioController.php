@@ -164,17 +164,37 @@
             $data_valida = json_decode(file_get_contents('php://input'), true);
 
             try{
-                $respuesta = $usuarioValida->validaUsuario($data_valida['usuario'], $data_valida['contrasenia']);
+/*                 $respuesta = $usuarioValida->validaUsuario($data_valida['usuario'], $data_valida['contrasenia'], $data_valida['hashtoken']);
                 if($respuesta && count($respuesta) > 0){
                     http_response_code(200);
                     echo json_encode(['status'=> true,'message'=> 'Consulta exitosa', 'data' => $respuesta]);
                 } else {
                     http_response_code(500);
                     echo json_encode(['status'=> false,'message'=> 'Usurio o contraseña invalidos, por favor ingresa credenciales validas.']);
+                } */
+               if(!isset($data_valida['usuario'], $data_valida['contrasenia'])){
+                http_response_code(400);
+                echo json_encode(['status'=>false, 'message'=> 'Campos incompletos']);
+                return;
+               }
+
+                $token = time() . $data_valida['usuario'] . $data_valida['contrasenia'];
+                $hashToken = hash("sha256", $token);
+
+                $respuesta = $usuarioValida->validaUsuario($data_valida['usuario'], $data_valida['contrasenia'], $hashToken);
+                if($respuesta && count($respuesta) > 0){
+
+                    http_response_code(200);
+                    echo json_encode(['status'=> true,'message'=> 'Autenticación exitosa', 'data' => $respuesta]);
+                } else {
+
+                    http_response_code(401);
+                    echo json_encode(['status'=> false,'message'=> 'Usurio o contraseña invalidos, por favor ingresa credenciales validas.']);
                 }
             } catch(Exception $e) {
                 http_response_code(500);
                 echo json_encode(['status'=> false,'message'=> $e->getMessage()]);
+                exit;
             }
         }
     }

@@ -7,7 +7,7 @@
 
         public function __construct(){
             $db = new Database();
-            $this->conn = $db->conectar();
+            $this->conn = $db -> conectar();
         }
         /* Métodos GET - Consulta una lista de usuarios activos*/
         public function consultaUsuarios($nombre, $apellido_paterno, $apellido_materno, $celular, $correo, $nombre_entidad, $habilitado){
@@ -89,12 +89,13 @@
             return $stmt->execute();
         }
 
-        public function validaUsuario($usuario, $contrasenia){
-            $spd = "CALL PD_VALIDA_USUARIO(:usuario, :contrasenia)";
+        public function validaUsuario($usuario, $contrasenia, $tokenhash){
+            $spd = "CALL PD_VALIDA_USUARIO(:usuario, :contrasenia, :tokenhash)";
             $stmt = $this->conn->prepare($spd);
 
             $stmt->bindValue(":usuario",$usuario);
             $stmt->bindValue(":contrasenia",$contrasenia);
+            $stmt->bindValue(":tokenhash", $tokenhash);
             $stmt->execute();
 
             $resultadoValidaUsuario = $stmt->fetchAll(PDO::FETCH_ASSOC);
