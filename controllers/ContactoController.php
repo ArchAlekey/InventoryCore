@@ -12,7 +12,7 @@
                 $data_inserta['mensaje']
             )){
                 http_response_code(400);
-                echo json_encode(['status'=>false, 'message'=>'Campos incompletos']);
+                echo json_encode(['status'=>'error', 'message'=>'Campos incompletos']);
             }
             try{
                 $respuesta = $contactoInserta->insertaContacto(
@@ -23,10 +23,10 @@
 
                 if($respuesta){
                     http_response_code(200);
-                    echo json_encode(['status'=>true, 'message'=>"Información de contacto envíada correctamente."]);
+                    echo json_encode(['status'=> 'Ok', 'message'=>"Información de contacto envíada correctamente."]);
                 } else {
                     http_response_code(500);
-                    echo json_encode(['status'=>false, 'message'=>'Hubo un error al intentar enviar su información de contacto.']);
+                    echo json_encode(['status'=> 'error', 'message'=>'Hubo un error al intentar enviar su información de contacto.']);
                 }
             } catch(Exception $e){
               http_response_code(500);

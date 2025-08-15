@@ -27,10 +27,10 @@
 
                 if($ok){
                     http_response_code(201);
-                    echo json_encode(['status'=> true,'message'=> 'Modificación realizada']);
+                    echo json_encode(['status'=> 'Ok','message'=> 'Modificación realizada']);
                 } else {
                     http_response_code(500);
-                    echo json_encode(['status'=> false,'error'=> 'No se pudo realizar la modificación']);
+                    echo json_encode(['status'=> 'error','message'=> 'No se pudo realizar la modificación']);
                 }
             } catch(Exception $e){
                 http_response_code(500);
@@ -42,12 +42,6 @@
             $idItemInventario = $_GET['id_item_inventario'] ?? null;
             $tipoModificacion = $_GET['tipo_modificacion'] ?? null;
 
-/*             if(!$idItemInventario || !$tipoModificacion){
-                http_response_code(400);
-                echo json_encode(['status' => false, 'error' => 'Campos vacios']);
-                return;
-                } */
-
             $bitacoraConsulta = new BitacoraRepository();
 
                 try{
@@ -55,10 +49,10 @@
                     if($resultadoBitacora && count($resultadoBitacora) > 0){
                         header('Content-Type: application/json');
                         http_response_code(200);
-                        echo json_encode(['status' => true,'message'=> 'Consulta exitosa', 'data' => $resultadoBitacora]);
+                        echo json_encode(['status' => 'Ok','message'=> 'Consulta exitosa', 'data' => $resultadoBitacora]);
                     } else {
-                        http_response_code(200);
-                        echo json_encode(['status'=> true,'message'=> 'No hay datos para mostrar']);
+                        http_response_code(201);
+                        echo json_encode(['status'=> 'Ok','message'=> 'No hay datos para mostrar']);
                     }
                 } catch(Exception $e){
                     http_response_code(500);

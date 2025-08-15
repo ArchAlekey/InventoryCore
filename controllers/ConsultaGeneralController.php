@@ -18,10 +18,10 @@ class ConsultaGeneralController{
             if($result && count($result) > 0){
                 header("Content-Type: application/json");
                 http_response_code(200);
-                echo json_encode(['status' => true, 'data' => $result]);
+                echo json_encode(['status' => 'Ok', 'data' => $result]);
             } else {
                 http_response_code(200);
-                echo json_encode(['status'=> true,'message'=> 'No hay registros de producto con estas caracteristicas']);
+                echo json_encode(['status'=> 'Ok','message'=> 'No hay registros de producto con estas caracteristicas']);
             }
 
         }catch(Exception $e){
@@ -42,7 +42,7 @@ class ConsultaGeneralController{
             $data_inserta['id_unidad_medida']
         )){
             http_response_code(500);
-            echo json_encode(['status'=> false,'message'=> 'No puedes envíar campos vacíos']);
+            echo json_encode(['status'=> 'error', 'message'=> 'No puedes envíar campos vacíos']);
             return;
         }
         try{
@@ -53,10 +53,10 @@ class ConsultaGeneralController{
                 $data_inserta['id_unidad_medida']);
             if($response){
                 http_response_code(200);
-                echo json_encode(['status'=> true,'message'=> 'Se ha agregado el item con exito.']);
+                echo json_encode(['status'=> 'Ok','message'=> 'Se ha agregado el item con exito.']);
             } else {
                 http_response_code(500);
-                echo json_encode(['status'=> false,'message'=> 'No se ha podido agregar el item']);
+                echo json_encode(['status'=> 'error','message'=> 'No se ha podido agregar el item']);
             }
         } catch (Exception $e) {
             http_response_code(500);

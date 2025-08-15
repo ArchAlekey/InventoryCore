@@ -20,10 +20,10 @@
                 if($consultaUsuario && count($consultaUsuario) > 0){
                     header('Content-Type: application/json');
                     http_response_code(200);
-                    echo json_encode(['status' => true, 'message' => 'Consulta Exitosa', 'data' => $consultaUsuario]);
+                    echo json_encode(['status' => 'Ok', 'message' => 'Consulta Exitosa', 'data' => $consultaUsuario]);
                 } else{
-                    http_response_code(200);
-                    echo json_encode(['status'=> true,'message'=> 'No hay registro de usuarios']);
+                    http_response_code(201);
+                    echo json_encode(['status'=> 'Ok','message'=> 'No hay registro de usuarios']);
                 }
             } catch(Exception $e){
                 http_response_code(500);
@@ -43,10 +43,10 @@
                     $datos_inserta['celular'],
                     $datos_inserta['correo'],
                     $datos_inserta['id_tipo_usuario'],
-                    $datos_inserta['contrasenia'],
+                    $datos_inserta['contrasenia']
                 )){
                     http_response_code(400);
-                    echo json_encode(['status'=> false,'error'=> 'Campos Incompletos']);
+                    echo json_encode(['status'=> 'error','message'=> 'Campos Incompletos']);
                     return;
                 }
             try{
@@ -61,10 +61,10 @@
                         $datos_inserta['contrasenia']);
                 if($respuesta){
                     http_response_code(200);
-                    echo json_encode(['status'=> true,'message'=> 'Se ha insertado el nuevo usuario']);
+                    echo json_encode(['status'=> 'Ok','message'=> 'Se ha insertado el nuevo usuario']);
                 } else {
                     http_response_code(500);
-                    echo json_encode(['status'=> false,'error'=> 'Hubo un error al tratar de registar al usuario']);
+                    echo json_encode(['status'=> 'error','message'=> 'Hubo un error al tratar de registar al usuario']);
                 }
             } catch(Exception $e) {
                 http_response_code(500);
@@ -88,10 +88,10 @@
 
                 if($respuesta){
                     http_response_code(200);
-                    echo json_encode(['status'=> true,'message'=> 'Se han actualizado correctamente los datos.']);
+                    echo json_encode(['status'=> 'Ok','message'=> 'Se han actualizado correctamente los datos.']);
                 } else {
                     http_response_code(500);
-                    echo json_encode(['status'=> false,'message'=> 'No se pudierón actualizar los datos.']);
+                    echo json_encode(['status'=> 'error','message'=> 'No se pudierón actualizar los datos.']);
                 }
                 
             } catch(Exception $e) {
@@ -109,10 +109,10 @@
 
                 if($respuesta){
                     http_response_code(200);
-                    echo json_encode(['status'=> true,'message'=> 'Se ha inhabilitado al usuario']);
+                    echo json_encode(['status'=> 'Ok','message'=> 'Se ha inhabilitado al usuario']);
                 } else {
                     http_response_code(500);
-                    echo json_encode(['status'=> false,'message'=> 'No se ha podido inhabilitar al usuario']);
+                    echo json_encode(['status'=> 'error','message'=> 'No se ha podido inhabilitar al usuario']);
                 }
             } catch(Exception $e) {
                 http_response_code(500);
@@ -129,10 +129,10 @@
 
                 if($respuesta){
                     http_response_code(200);
-                    echo json_encode(['status'=> true,'message'=> 'Se ha habilitado al usuario']);
+                    echo json_encode(['status'=> 'Ok','message'=> 'Se ha habilitado al usuario']);
                 } else {
                     http_response_code(500);
-                    echo json_encode(['status'=> false,'message'=> 'No se ha podido habilitar al usuario']);
+                    echo json_encode(['status'=> 'error','message'=> 'No se ha podido habilitar al usuario']);
                 }
             } catch(Exception $e) {
                 http_response_code(500);
@@ -148,10 +148,10 @@
                 $respuesta = $usuarioElimina->eliminaUsuarios($data_elimina['id_persona']);
                 if($respuesta){
                     http_response_code(200);
-                    echo json_encode(['status'=> true,'message'=> 'Se ha eliminado al usuario.']);
+                    echo json_encode(['status'=> 'Ok','message'=> 'Se ha eliminado al usuario.']);
                 } else {
                     http_response_code(500);
-                    echo json_encode(['status'=> false,'message'=> 'No se pudo elimiar al usuario']);
+                    echo json_encode(['status'=> 'error','message'=> 'No se pudo elimiar al usuario']);
                 }
             } catch(Exception $e) {
                 http_response_code(500);
@@ -164,36 +164,34 @@
             $data_valida = json_decode(file_get_contents('php://input'), true);
 
             try{
-/*                 $respuesta = $usuarioValida->validaUsuario($data_valida['usuario'], $data_valida['contrasenia'], $data_valida['hashtoken']);
-                if($respuesta && count($respuesta) > 0){
-                    http_response_code(200);
-                    echo json_encode(['status'=> true,'message'=> 'Consulta exitosa', 'data' => $respuesta]);
-                } else {
-                    http_response_code(500);
-                    echo json_encode(['status'=> false,'message'=> 'Usurio o contraseña invalidos, por favor ingresa credenciales validas.']);
-                } */
-               if(!isset($data_valida['usuario'], $data_valida['contrasenia'])){
+               if(!isset($data_valida['usuario'], $data_valida['contrasenia']) || empty($data_valida['usuario']) || empty($data_valida['contrasenia'])){
+
                 http_response_code(400);
-                echo json_encode(['status'=>false, 'message'=> 'Campos incompletos']);
+                echo json_encode(['status'=>'error', 'message'=> 'Campos incompletos']);
                 return;
                }
 
                 $token = time() . $data_valida['usuario'] . $data_valida['contrasenia'];
                 $hashToken = hash("sha256", $token);
 
-                $respuesta = $usuarioValida->validaUsuario($data_valida['usuario'], $data_valida['contrasenia'], $hashToken);
+                $respuesta = $usuarioValida->validaUsuario($data_valida['usuario'], $data_valida['contrasenia']);
+
                 if($respuesta && count($respuesta) > 0){
 
+                    $id_usuario = $respuesta[0]['id_usuario'];
+                    
+                    $respuestaToken = $usuarioValida->generaTokenUsuario($id_usuario, $hashToken);
+
                     http_response_code(200);
-                    echo json_encode(['status'=> true,'message'=> 'Autenticación exitosa', 'data' => $respuesta]);
+                    echo json_encode(['status'=> 'Ok','message'=> 'Autenticación exitosa', 'data' => ['userData'=> $respuesta, 'tokenData' => $respuestaToken]]);
                 } else {
 
                     http_response_code(401);
-                    echo json_encode(['status'=> false,'message'=> 'Usurio o contraseña invalidos, por favor ingresa credenciales validas.']);
+                    echo json_encode(['status'=> 'error','message'=> 'Usurio o contraseña invalidos, por favor ingresa credenciales validas.']);
                 }
             } catch(Exception $e) {
                 http_response_code(500);
-                echo json_encode(['status'=> false,'message'=> $e->getMessage()]);
+                echo json_encode(['status'=> false, 'error'=> $e->getMessage()]);
                 exit;
             }
         }

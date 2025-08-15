@@ -89,13 +89,12 @@
             return $stmt->execute();
         }
 
-        public function validaUsuario($usuario, $contrasenia, $tokenhash){
-            $spd = "CALL PD_VALIDA_USUARIO(:usuario, :contrasenia, :tokenhash)";
+        public function validaUsuario($usuario, $contrasenia){
+            $spd = "CALL PD_VALIDA_USUARIO(:usuario, :contrasenia)";
             $stmt = $this->conn->prepare($spd);
 
             $stmt->bindValue(":usuario",$usuario);
             $stmt->bindValue(":contrasenia",$contrasenia);
-            $stmt->bindValue(":tokenhash", $tokenhash);
             $stmt->execute();
 
             $resultadoValidaUsuario = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -103,5 +102,19 @@
             return $resultadoValidaUsuario;
         }
 
+        public function generaTokenUsuario($id_usuario, $hashtoken){
+            $spd = "CALL PD_REGISTRO_TOKENS(:id_usuario, :hashtoken)";
+            $stmt = $this->conn->prepare($spd);
 
+            $stmt->bindValue(":id_usuario", $id_usuario);
+            $stmt->bindValue(":hashtoken", $hashtoken);
+            $stmt->execute();
+
+            $resultadoGeneraToken = $stmt->fetch(PDO::FETCH_ASSOC);
+            // Saltar resultados intermedios si existen
+            while ($stmt->nextRowset()){;}
+
+            $stmt->closeCursor();
+            return $resultadoGeneraToken;
+        }
     }
